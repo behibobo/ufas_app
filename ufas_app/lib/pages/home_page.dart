@@ -7,6 +7,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_vpn/flutter_vpn.dart';
 import 'package:ufas_app/blocs/authentication/authentication.dart';
+import 'package:ufas_app/models/server.dart';
 import 'package:ufas_app/pages/profile_page.dart';
 import 'package:ufas_app/pages/servers_page.dart';
 import 'package:ufas_app/services/api_service.dart';
@@ -27,6 +28,7 @@ class _HomePageState extends State<HomePage> {
   final String logOut = 'assets/logout.svg';
   Future<dynamic> data;
   int serverType = 1;
+  Server selectedServer = null;
 
   Future<dynamic> _getAccount() async {
     var _res = await APIService.getAccount(widget.user.token);
@@ -327,11 +329,41 @@ class _HomePageState extends State<HomePage> {
               ),
               buildUi(context),
               _itemDown(),
-              RaisedButton(
-                child: Text('servers'),
-                onPressed: () {
-                  pushReplacement(context, ServersPage());
-                },
+              Container(
+                width: MediaQuery.of(context).size.width / 1.5,
+                child: FlatButton(
+                  child: (selectedServer != null)
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.network(
+                              selectedServer.flag,
+                              width: 30,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(selectedServer.country),
+                          ],
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.gps_fixed),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text('AutoSelect'),
+                          ],
+                        ),
+                  onPressed: () async {
+                    final result = await Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => ServersPage()));
+                    setState(() {
+                      selectedServer = result;
+                    });
+                  },
+                ),
               ),
               FutureBuilder<dynamic>(
                   future: data,

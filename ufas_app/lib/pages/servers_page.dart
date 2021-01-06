@@ -40,7 +40,7 @@ class _ServersPageState extends State<ServersPage> {
     return Container(
         width: double.infinity,
         child: Scaffold(
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.white,
             // drawer: MainDrawer(),
             body: FutureBuilder(
               future: _getServers(),
@@ -53,7 +53,10 @@ class _ServersPageState extends State<ServersPage> {
                     if (snapshot.hasError)
                       return new Text('Error: ${snapshot.error}');
                     else
-                      return createListView(context, snapshot);
+                      return SafeArea(
+                          minimum: const EdgeInsets.symmetric(
+                              vertical: 25.0, horizontal: 16.0),
+                          child: createListView(context, snapshot));
                 }
               },
             )));
@@ -70,7 +73,46 @@ class _ServersPageState extends State<ServersPage> {
           children: <Widget>[
             Container(
                 child: Column(
-              children: [serverList(servers)],
+              children: [
+                (index == 0)
+                    ? GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedServer = null;
+                          });
+                        },
+                        child: Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 10),
+                            margin: EdgeInsets.symmetric(vertical: 2),
+                            // decoration: BoxDecoration(
+                            //     border: Border.all(
+                            //   color: Colors.grey[200],
+                            // )),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.gps_fixed,
+                                  size: 20,
+                                ),
+                                SizedBox(
+                                  width: 15,
+                                ),
+                                Expanded(child: Text("AutoSelect")),
+                                SizedBox(
+                                  width: 15,
+                                )
+                              ],
+                            )))
+                    : SizedBox(),
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  width: double.infinity,
+                  color: Colors.grey[100],
+                  child: Center(child: Text(region.region)),
+                ),
+                serverList(servers)
+              ],
             )),
             new Divider(
               height: 2.0,
@@ -88,6 +130,7 @@ class _ServersPageState extends State<ServersPage> {
                 onTap: () {
                   setState(() {
                     selectedServer = item;
+                    Navigator.pop(context, item);
                   });
                 },
                 child: Container(
@@ -99,19 +142,19 @@ class _ServersPageState extends State<ServersPage> {
                     // )),
                     child: Row(
                       children: [
-                        // Image.network(
-                        //   item.flag,
-                        //   width: 35,
-                        // ),
+                        Image.network(
+                          item.flag,
+                          width: 35,
+                        ),
                         SizedBox(
                           width: 15,
                         ),
-                        Expanded(child: Text("Country")),
+                        Expanded(child: Text(item.country)),
                         Row(children: [
-                          // Image.asset(
-                          //   "assets/connection.png",
-                          //   width: 20,
-                          // ),
+                          Icon(
+                            Icons.gps_fixed,
+                            size: 20,
+                          ),
                           SizedBox(
                             width: 10,
                           ),
