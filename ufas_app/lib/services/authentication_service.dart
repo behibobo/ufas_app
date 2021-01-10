@@ -16,7 +16,7 @@ abstract class AuthenticationService {
 }
 
 class MyAuthenticationService extends AuthenticationService {
-  final String api = 'https://192.168.1.54:3000';
+  final String api = 'https://ufas.coding-lodge.com/';
 
   @override
   Future<User> getCurrentUser() async {
@@ -50,7 +50,8 @@ class MyAuthenticationService extends AuthenticationService {
       var user = User(
           token: apiResponse['token'],
           email: apiResponse['user']['email'],
-          uuid: apiResponse['user']['uuid']);
+          uuid: apiResponse['user']['uuid'],
+          authorized: true);
       await SharedPref.save('user', user);
 
       return user;
@@ -82,7 +83,8 @@ class MyAuthenticationService extends AuthenticationService {
       var user = User(
           token: apiResponse['token'],
           email: apiResponse['user']['email'],
-          uuid: apiResponse['user']['uuid']);
+          uuid: apiResponse['user']['uuid'],
+          authorized: true);
       await SharedPref.save('user', user);
 
       return user;
@@ -116,7 +118,8 @@ class MyAuthenticationService extends AuthenticationService {
       var user = User(
           token: apiResponse['token'],
           email: apiResponse['user']['email'],
-          uuid: apiResponse['user']['uuid']);
+          uuid: apiResponse['user']['uuid'],
+          authorized: true);
       await SharedPref.save('user', user);
 
       return user;

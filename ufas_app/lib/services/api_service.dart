@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:ufas_app/models/account.dart';
 
-const baseUrl = "https://192.168.1.54:3000/api";
+const baseUrl = "https://ufas.coding-lodge.com/api";
 
 class APIService {
   static Future<Account> getAccount(String token) async {
@@ -20,7 +20,7 @@ class APIService {
       return acc;
     }
 
-    return null;
+    return Account(active: false, daysLeft: 0, plan: null);
   }
 
   static Future<String> getReferrer(String referrerCode) async {
@@ -56,8 +56,8 @@ class APIService {
     return false;
   }
 
-  static Future getServers() {
-    var url = baseUrl + "/servers";
+  static Future getServers(bool authorized) {
+    var url = baseUrl + "/servers?premium=$authorized";
     return http.get(url);
   }
 }

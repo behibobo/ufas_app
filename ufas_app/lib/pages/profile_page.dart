@@ -64,147 +64,152 @@ class _ProfilePageState extends State<ProfilePage> {
             )),
         centerTitle: true,
       ),
-      body: SafeArea(
-        minimum: const EdgeInsets.all(16),
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              Text(
-                'Welcome, ${widget.user.email}',
-                style: TextStyle(fontSize: 14),
-              ),
-              const SizedBox(
-                height: 12,
-              ),
-              SizedBox(
-                height: 190,
-                child: bytes.isEmpty
-                    ? Center(
-                        child: RaisedButton(
-                          child: Text('Empty code ... ',
-                              style: TextStyle(color: Colors.black38)),
-                          onPressed: () async {
-                            await _generateBarCode(widget.user.uuid);
-                          },
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+            child: Column(
+              children: <Widget>[
+                Text(
+                  'Welcome, ${widget.user.email}',
+                  style: TextStyle(fontSize: 14),
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                SizedBox(
+                  child: bytes.isEmpty
+                      ? Center(
+                          child: RaisedButton(
+                            child: Text('Empty code ... ',
+                                style: TextStyle(color: Colors.black38)),
+                            onPressed: () async {
+                              await _generateBarCode(widget.user.uuid);
+                            },
+                          ),
+                        )
+                      : Image.memory(
+                          bytes,
+                          width: 130,
                         ),
-                      )
-                    : Image.memory(bytes),
-              ),
-              FutureBuilder<dynamic>(
-                  future: data,
-                  builder:
-                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                    if (snapshot.hasData) {
-                      var account = snapshot.data;
-                      var plan = account.plan;
-                      return SafeArea(
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 15,
-                            ),
-                            RaisedButton(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)),
-                              onPressed: () {
-                                Clipboard.setData(new ClipboardData(
-                                        text: widget.user.uuid))
-                                    .then((_) {
-                                  Scaffold.of(context).showSnackBar(SnackBar(
-                                      content:
-                                          Text("uuid copied to clipboard")));
-                                });
-                              },
-                              child: Text(widget.user.uuid),
-                            ),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Container(
-                                padding: EdgeInsets.symmetric(horizontal: 15),
-                                child: Text(
-                                  "You can use the uuid or scan QRCode to log into your account on other devices",
-                                  textAlign: TextAlign.center,
-                                )),
-                            SizedBox(
-                              height: 35,
-                            ),
-                            Text("Your Current Plan"),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Container(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(
-                                        width: 2.0,
-                                        color: const Color.fromRGBO(
-                                            130, 0, 0, 1))),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 20),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          children: [
-                                            Text("StartDate"),
-                                            Text(account.startedDate)
-                                          ],
-                                        ),
-                                        Container(
-                                          width: 100,
-                                          height: 100,
-                                          decoration: new BoxDecoration(
-                                            color: Color.fromRGBO(139, 0, 0, 8),
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                ),
+                FutureBuilder<dynamic>(
+                    future: data,
+                    builder: (BuildContext context,
+                        AsyncSnapshot<dynamic> snapshot) {
+                      if (snapshot.hasData) {
+                        var account = snapshot.data;
+                        var plan = account.plan;
+                        return SafeArea(
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 15,
+                              ),
+                              RaisedButton(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20)),
+                                onPressed: () {
+                                  Clipboard.setData(new ClipboardData(
+                                          text: widget.user.uuid))
+                                      .then((_) {
+                                    Scaffold.of(context).showSnackBar(SnackBar(
+                                        content:
+                                            Text("uuid copied to clipboard")));
+                                  });
+                                },
+                                child: Text(widget.user.uuid),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 15),
+                                  child: Text(
+                                    "You can use the uuid or scan QRCode to log into your account on other devices",
+                                    textAlign: TextAlign.center,
+                                  )),
+                              SizedBox(
+                                height: 35,
+                              ),
+                              Text("Your Current Plan"),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                          width: 2.0,
+                                          color: const Color.fromRGBO(
+                                              130, 0, 0, 1))),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 20),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
                                             children: [
-                                              Center(
-                                                child: Text(
-                                                  account.daysLeft.toString(),
-                                                  style: TextStyle(
-                                                      fontSize: 25,
-                                                      color: Colors.white),
-                                                ),
-                                              ),
-                                              Center(
-                                                child: Text(
-                                                  "days left",
-                                                  style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: Colors.white),
-                                                ),
-                                              )
+                                              Text("StartDate"),
+                                              Text(account.startedDate)
                                             ],
                                           ),
-                                        ),
-                                        Column(
-                                          children: [
-                                            Text("EndDate"),
-                                            Text(account.expireDate)
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ],
+                                          Container(
+                                            width: 80,
+                                            height: 80,
+                                            decoration: new BoxDecoration(
+                                              color:
+                                                  Color.fromRGBO(139, 0, 0, 8),
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Center(
+                                                  child: Text(
+                                                    account.daysLeft.toString(),
+                                                    style: TextStyle(
+                                                        fontSize: 25,
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                                Center(
+                                                  child: Text(
+                                                    "days left",
+                                                    style: TextStyle(
+                                                        fontSize: 12,
+                                                        color: Colors.white),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          Column(
+                                            children: [
+                                              Text("EndDate"),
+                                              Text(account.expireDate)
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            )
-                          ],
-                        ),
-                      );
-                    } else {
-                      return CircularProgressIndicator();
-                    }
-                  }),
-            ],
+                              )
+                            ],
+                          ),
+                        );
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    }),
+              ],
+            ),
           ),
         ),
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ufas_app/pages/register_page.dart';
 import 'package:ufas_app/pages/splash_page.dart';
+import 'package:ufas_app/pages/uuid_login_page.dart';
 import '../blocs/blocs.dart';
 import '../helper.dart';
 import '../services/services.dart';
@@ -114,75 +115,111 @@ class __SignInFormState extends State<_SignInForm> {
               child: CircularProgressIndicator(),
             );
           }
-          return Form(
-            key: _key,
-            autovalidateMode: _autoValidate
-                ? AutovalidateMode.always
-                : AutovalidateMode.disabled,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Email address',
-                      filled: true,
-                      isDense: true,
-                    ),
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    autocorrect: false,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Email is required.';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      filled: true,
-                      isDense: true,
-                    ),
-                    obscureText: true,
-                    controller: _passwordController,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Password is required.';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  RaisedButton(
-                    color: Theme.of(context).primaryColor,
-                    textColor: Colors.white,
-                    padding: const EdgeInsets.all(16),
-                    shape: new RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(8.0)),
-                    child: Text('LOG IN'),
-                    onPressed:
-                        state is LoginLoading ? () {} : _onLoginButtonPressed,
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  RaisedButton(
-                      elevation: 0,
-                      color: Colors.transparent,
-                      child: Text("CreateAccount"),
-                      onPressed: () => Navigator.of(context).pushReplacement(
-                          new MaterialPageRoute(
-                              builder: (context) => RegisterPage())))
-                ],
+          return Column(
+            children: [
+              SizedBox(
+                height: 20,
               ),
-            ),
+              Form(
+                key: _key,
+                autovalidateMode: _autoValidate
+                    ? AutovalidateMode.always
+                    : AutovalidateMode.disabled,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Email address',
+                          filled: true,
+                          isDense: true,
+                          focusColor: Colors.white,
+                        ),
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        autocorrect: false,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Email is required.';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(
+                        height: 12,
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          filled: true,
+                          isDense: true,
+                        ),
+                        obscureText: true,
+                        controller: _passwordController,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Password is required.';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      RaisedButton(
+                        color: Colors.redAccent,
+                        textColor: Colors.white,
+                        padding: const EdgeInsets.all(16),
+                        shape: new RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(8.0)),
+                        child: Text('LOG IN'),
+                        onPressed: state is LoginLoading
+                            ? () {}
+                            : _onLoginButtonPressed,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 15),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey[200], width: 4),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: FlatButton(
+                    onPressed: () => pushReplacement(context, UuidLoginPage()),
+                    child: Column(
+                      children: [
+                        Icon(Icons.qr_code),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text("Scan QRCode to Login")
+                      ],
+                    )),
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Text("OR"),
+              SizedBox(
+                height: 5,
+              ),
+              RaisedButton(
+                  elevation: 0,
+                  color: Colors.transparent,
+                  child: Text("CreateAccount"),
+                  onPressed: () => Navigator.of(context).pushReplacement(
+                      new MaterialPageRoute(
+                          builder: (context) => RegisterPage()))),
+            ],
           );
         },
       ),

@@ -6,15 +6,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 final _currentPageNotifier = ValueNotifier<int>(0);
 
 final List<String> _titlesList = [
-  'Flutter Onboarding',
-  'Firebase Auth',
-  'Facebook Login'
+  'Highly Secure & Fast',
+  'User_friendly and Smooth UI',
+  'Servers in almost all countries'
 ];
 
 final List<String> _subtitlesList = [
-  'Build your onboarding flow in seconds.',
-  'Use Firebase for user managements.',
-  'Leaverage Facebook to log in user easily.'
+  'Some lines about security and performace',
+  'with some illustration depict user interface',
+  'about servers and some of the major countries'
 ];
 
 final List<IconData> _imageList = [
@@ -48,35 +48,33 @@ Widget getPage(IconData icon, String title, String subTitle) {
     child: Container(
       color: Colors.blueAccent,
       child: Center(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 200.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(40.0),
-                child: new Icon(
-                  icon,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(40.0),
+              child: new Icon(
+                icon,
+                color: Colors.white,
+                size: 120,
+              ),
+            ),
+            Text(
+              title,
+              style: TextStyle(
                   color: Colors.white,
-                  size: 120,
-                ),
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                subTitle,
+                style: TextStyle(color: Colors.white70, fontSize: 17.0),
               ),
-              Text(
-                title,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  subTitle,
-                  style: TextStyle(color: Colors.white70, fontSize: 17.0),
-                ),
-              )
-            ],
-          ),
+            )
+          ],
         ),
       ),
     ),

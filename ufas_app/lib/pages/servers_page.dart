@@ -19,7 +19,7 @@ class _ServersPageState extends State<ServersPage> {
   Server selectedServer = null;
 
   Future<List<Region>> _getServers() async {
-    var response = await APIService.getServers();
+    var response = await APIService.getServers(widget.user.authorized);
     Iterable list = await json.decode(response.body);
     var connections = list.map((model) => Region.fromJson(model)).toList();
     return connections;
@@ -48,7 +48,7 @@ class _ServersPageState extends State<ServersPage> {
                 switch (snapshot.connectionState) {
                   case ConnectionState.none:
                   case ConnectionState.waiting:
-                    return new Text('loading...');
+                    return Center(child: new CircularProgressIndicator());
                   default:
                     if (snapshot.hasError)
                       return new Text('Error: ${snapshot.error}');
@@ -79,6 +79,7 @@ class _ServersPageState extends State<ServersPage> {
                         onTap: () {
                           setState(() {
                             selectedServer = null;
+                            Navigator.pop(context, null);
                           });
                         },
                         child: Container(
