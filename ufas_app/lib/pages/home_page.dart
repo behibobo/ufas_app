@@ -574,11 +574,43 @@ ded829826f3047fe3504f04bfbf765da
           ))
         ],
       );
-    } else if (openVpnState == "VPN_GENERATE_CONFIG" ||
-        openVpnState == "GET_CONFIG" ||
-        openVpnState == "ASSIGN_IP" ||
-        openVpnState == "AUTH" ||
-        openVpnState == "WAIT") {
+    } else if (openVpnState == "DISCONNECTED") {
+      // bağlı değil
+      return Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Center(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "TAP TO\nTURN ON VPN",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontFamily: "Montserrat-SemiBold",
+                    fontSize: 16.0),
+              ),
+              SizedBox(height: screenAwareSize(15.0, context)),
+              SizedBox(
+                width: screenAwareSize(130.0, context),
+                height: screenAwareSize(130.0, context),
+                child: FloatingActionButton(
+                  elevation: 0,
+                  backgroundColor: Colors.white,
+                  onPressed: connectVpn,
+                  child: new Icon(Icons.power_settings_new,
+                      color: Colors.green,
+                      size: screenAwareSize(100.0, context)),
+                ),
+              ),
+              SizedBox(height: screenAwareSize(40.0, context)),
+            ],
+          ))
+        ],
+      );
+    } else {
       // bağlanıyor
       return Row(
         mainAxisSize: MainAxisSize.max,
@@ -624,42 +656,6 @@ ded829826f3047fe3504f04bfbf765da
           ))
         ],
       );
-    } else {
-      // bağlı değil
-      return Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Center(
-              child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                "TAP TO\nTURN ON VPN",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Colors.black,
-                    fontFamily: "Montserrat-SemiBold",
-                    fontSize: 16.0),
-              ),
-              SizedBox(height: screenAwareSize(15.0, context)),
-              SizedBox(
-                width: screenAwareSize(130.0, context),
-                height: screenAwareSize(130.0, context),
-                child: FloatingActionButton(
-                  elevation: 0,
-                  backgroundColor: Colors.white,
-                  onPressed: connectVpn,
-                  child: new Icon(Icons.power_settings_new,
-                      color: Colors.green,
-                      size: screenAwareSize(100.0, context)),
-                ),
-              ),
-              SizedBox(height: screenAwareSize(40.0, context)),
-            ],
-          ))
-        ],
-      );
     }
   }
 
@@ -667,211 +663,247 @@ ded829826f3047fe3504f04bfbf765da
   Widget build(BuildContext context) {
     final authBloc = BlocProvider.of<AuthenticationBloc>(context);
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        iconTheme: IconThemeData(color: Colors.black),
-      ),
-      drawer: Drawer(
-        // Add a ListView to the drawer. This ensures the user can scroll
-        // through the options in the drawer if there isn't enough vertical
-        // space to fit everything.
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            SizedBox(
-              height: 60,
-            ),
-            (widget.user.authorized)
-                ? ListTile(
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [Text("Profile"), Icon(Icons.person)],
-                    ),
-                    onTap: () {
-                      pushReplacement(context, ProfilePage(user: widget.user));
-                    },
-                  )
-                : SizedBox(
-                    height: 0,
-                  ),
-            ListTile(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [Text("Logout"), Icon(Icons.logout)],
-              ),
-              onTap: () {
-                authBloc.add(UserLoggedOut());
-              },
-            ),
-          ],
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
+          iconTheme: IconThemeData(color: Colors.black),
         ),
-      ),
-      body: SafeArea(
-        minimum: const EdgeInsets.all(16),
-        child: Center(
-          child: Column(
+        drawer: Drawer(
+          // Add a ListView to the drawer. This ensures the user can scroll
+          // through the options in the drawer if there isn't enough vertical
+          // space to fit everything.
+          child: ListView(
+            // Important: Remove any padding from the ListView.
+            padding: EdgeInsets.zero,
             children: <Widget>[
               SizedBox(
-                height: 20,
+                height: 60,
               ),
-              (serverType == 1) ? buildUi(context) : buildOpenVpnUi(context),
-              // _itemDown(),
-              Container(
-                width: MediaQuery.of(context).size.width / 1.5,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            serverType = 1;
-                          });
-                        },
-                        child: Container(
-                            padding: EdgeInsets.all(8),
-                            decoration: (serverType == 1)
-                                ? BoxDecoration(
-                                    border: Border.all(color: Colors.green),
-                                    borderRadius: BorderRadius.circular(12),
-                                    color: Colors.white)
-                                : BoxDecoration(),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  "assets/ikev_logo.png",
-                                  width: 30,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text("     Ikev     ",
-                                    style: TextStyle(fontSize: 10)),
-                              ],
-                            ))),
-                    GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            serverType = 2;
-                          });
-                        },
-                        child: Container(
-                            padding: EdgeInsets.all(8),
-                            decoration: (serverType == 2)
-                                ? BoxDecoration(
-                                    border: Border.all(color: Colors.green),
-                                    borderRadius: BorderRadius.circular(12),
-                                    color: Colors.white)
-                                : BoxDecoration(),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  "assets/openvpn_logo.png",
-                                  width: 30,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text("ovpn (tcp)",
-                                    style: TextStyle(fontSize: 10)),
-                              ],
-                            ))),
-                    GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            serverType = 3;
-                          });
-                        },
-                        child: Container(
-                            padding: EdgeInsets.all(8),
-                            decoration: (serverType == 3)
-                                ? BoxDecoration(
-                                    border: Border.all(color: Colors.green),
-                                    borderRadius: BorderRadius.circular(12),
-                                    color: Colors.white)
-                                : BoxDecoration(),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  "assets/openvpn_logo.png",
-                                  width: 30,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text("ovpn (udp)",
-                                    style: TextStyle(fontSize: 10)),
-                              ],
-                            ))),
-                  ],
+              (widget.user.authorized)
+                  ? ListTile(
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [Text("Profile"), Icon(Icons.person)],
+                      ),
+                      onTap: () {
+                        pushReplacement(
+                            context, ProfilePage(user: widget.user));
+                      },
+                    )
+                  : SizedBox(
+                      height: 0,
+                    ),
+              ListTile(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [Text("Logout"), Icon(Icons.logout)],
                 ),
+                onTap: () {
+                  authBloc.add(UserLoggedOut());
+                },
               ),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width / 1.5,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.grey[300],
-                    width: 1.0,
-                  ),
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: FlatButton(
-                  child: (selectedServer != null)
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.network(
-                              selectedServer.flag,
-                              width: 30,
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text(selectedServer.country),
-                          ],
-                        )
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.gps_fixed),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text('AutoSelect'),
-                          ],
-                        ),
-                  onPressed: () async {
-                    final result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                ServersPage(user: widget.user)));
-                    setState(() {
-                      selectedServer = result;
-                    });
-                  },
-                ),
-              ),
-              // FutureBuilder<Account>(
-              //     future: _getAccount(),
-              //     builder:
-              //         (BuildContext context, AsyncSnapshot<Account> snapshot) {
-              //       if (snapshot.hasData) {
-              //         return Text(snapshot.data.active.toString());
-              //       } else {
-              //         return CircularProgressIndicator();
-              //       }
-              //     }),
             ],
           ),
         ),
-      ),
-    );
+        body: WillPopScope(
+          onWillPop: _onBackPressed,
+          child: SafeArea(
+            minimum: const EdgeInsets.all(16),
+            child: Center(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 20,
+                  ),
+                  (serverType == 1)
+                      ? buildUi(context)
+                      : buildOpenVpnUi(context),
+                  // _itemDown(),
+                  Container(
+                    width: MediaQuery.of(context).size.width / 1.5,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                serverType = 1;
+                              });
+                            },
+                            child: Container(
+                                padding: EdgeInsets.all(8),
+                                decoration: (serverType == 1)
+                                    ? BoxDecoration(
+                                        border: Border.all(color: Colors.green),
+                                        borderRadius: BorderRadius.circular(12),
+                                        color: Colors.white)
+                                    : BoxDecoration(),
+                                child: Column(
+                                  children: [
+                                    Image.asset(
+                                      "assets/ikev_logo.png",
+                                      width: 30,
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text("     Ikev     ",
+                                        style: TextStyle(fontSize: 10)),
+                                  ],
+                                ))),
+                        GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                serverType = 2;
+                              });
+                            },
+                            child: Container(
+                                padding: EdgeInsets.all(8),
+                                decoration: (serverType == 2)
+                                    ? BoxDecoration(
+                                        border: Border.all(color: Colors.green),
+                                        borderRadius: BorderRadius.circular(12),
+                                        color: Colors.white)
+                                    : BoxDecoration(),
+                                child: Column(
+                                  children: [
+                                    Image.asset(
+                                      "assets/openvpn_logo.png",
+                                      width: 30,
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text("ovpn (tcp)",
+                                        style: TextStyle(fontSize: 10)),
+                                  ],
+                                ))),
+                        GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                serverType = 3;
+                              });
+                            },
+                            child: Container(
+                                padding: EdgeInsets.all(8),
+                                decoration: (serverType == 3)
+                                    ? BoxDecoration(
+                                        border: Border.all(color: Colors.green),
+                                        borderRadius: BorderRadius.circular(12),
+                                        color: Colors.white)
+                                    : BoxDecoration(),
+                                child: Column(
+                                  children: [
+                                    Image.asset(
+                                      "assets/openvpn_logo.png",
+                                      width: 30,
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text("ovpn (udp)",
+                                        style: TextStyle(fontSize: 10)),
+                                  ],
+                                ))),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width / 1.5,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey[300],
+                        width: 1.0,
+                      ),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: FlatButton(
+                      child: (selectedServer != null)
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.network(
+                                  selectedServer.flag,
+                                  width: 30,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(selectedServer.country),
+                              ],
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.gps_fixed),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text('AutoSelect'),
+                              ],
+                            ),
+                      onPressed: () async {
+                        final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ServersPage(user: widget.user)));
+                        setState(() {
+                          selectedServer = result;
+                        });
+                      },
+                    ),
+                  ),
+                  // FutureBuilder<Account>(
+                  //     future: _getAccount(),
+                  //     builder:
+                  //         (BuildContext context, AsyncSnapshot<Account> snapshot) {
+                  //       if (snapshot.hasData) {
+                  //         return Text(snapshot.data.active.toString());
+                  //       } else {
+                  //         return CircularProgressIndicator();
+                  //       }
+                  //     }),
+                ],
+              ),
+            ),
+          ),
+        ));
+  }
+
+  Future<bool> _onBackPressed() {
+    return showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Confirm'),
+              content: Text('Do you want to exit the App'),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('No'),
+                  onPressed: () {
+                    Navigator.of(context).pop(false); //Will not exit the App
+                  },
+                ),
+                FlatButton(
+                  child: Text('Yes'),
+                  onPressed: () {
+                    if (serverType == 1) {
+                    } else {
+                      FlutterOpenvpn.stopVPN();
+                    }
+                    Navigator.of(context).pop(true); //Will exit the App
+                  },
+                )
+              ],
+            );
+          },
+        ) ??
+        false;
   }
 }
